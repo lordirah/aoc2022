@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from os import wait
 import os.path
 
 import pytest
@@ -11,23 +12,42 @@ INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
 def compute(s: str) -> int:
-    n = 0
-    for i, c in enumerate(s.strip(), start=1):
-        if c == '(':
-            n += 1
-        elif c == ')':
-            n -= 1
-            if n == -1:
-                return i
+    lines = s.splitlines()
+    max_num_lst = []
+    sum_val = 0
+    max_val = 0
+    for line in lines:
+        if line.strip() == '':
+            max_num_lst.append(sum_val)
+            sum_val = 0
         else:
-            raise AssertionError(f'unexpected: {c!r}')
-    raise AssertionError('unreachable')
+            sum_val = sum_val + int(line.strip())
+    max_num_lst.append(sum_val)
+    max_num_lst.sort(reverse=True)
+    top_3_lst = max_num_lst[0:3]
+    max_val = 0
+    for i in top_3_lst:
+        max_val = i + max_val
+    return max_val
 
 
 INPUT_S = '''\
-()())
+1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000
 '''
-EXPECTED = 5
+EXPECTED = 45000
 
 
 @pytest.mark.parametrize(
